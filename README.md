@@ -1,10 +1,9 @@
 # autoscan-spring-boot-starter
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.0-brightgreen.svg)](https://spring.io/projects/spring-boot)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.1-brightgreen.svg)](https://spring.io/projects/spring-boot)
-[![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://openjdk.org/projects/jdk/17/)
-[![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://openjdk.org/projects/jdk/21/)
+![Maven Central](https://img.shields.io/maven-central/v/org.itrys/autoscan-spring-boot-starter.svg?label=Maven)
+[![License](https://img.shields.io/badge/JDK-17+-4EB1BA.svg)](https://docs.oracle.com/javase/17/docs/index.html)
+[![License](https://img.shields.io/badge/SpringBoot-3.2.0+-green.svg)](https://docs.spring.io/spring-boot/docs/2.1.5.RELEASE/reference/htmlsingle/)
 
 > A lightweight Starter that solves the cross-package scanning pain point in Spring Boot, making infrastructure development so simple.
 
@@ -235,7 +234,7 @@ Each infrastructure layer configures its own `base-packages`, upper layers autom
 
 ### Q3: Does it support Spring Boot 3.x?
 
-**A**: Yes. autoscan-spring-boot-starter 1.0.0 is developed based on Spring Boot 4.0.1, fully compatible with Spring Boot 3.x/4.x.
+**A**: Yes. autoscan-spring-boot-starter 1.0.0 is developed based on Spring Boot 3.2.0, fully compatible with Spring Boot 3.x/4.x.
 
 ### Q4: What if components cannot be scanned?
 
