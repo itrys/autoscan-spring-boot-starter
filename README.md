@@ -10,8 +10,17 @@
 
 > A lightweight Starter that solves the cross-package scanning pain point in Spring Boot, making infrastructure development so simple.
 
-README: [English](https://github.com/grpc-ecosystem/grpc-spring/blob/master/README.md) | [中文](
-  
+<!-- Keep these links. Translations will automatically update with the README. -->
+[Deutsch](https://zdoc.app/de/itrys/autoscan-spring-boot-starter) | 
+[English](https://zdoc.app/en/itrys/autoscan-spring-boot-starter) | 
+[Español](https://zdoc.app/es/itrys/autoscan-spring-boot-starter) | 
+[français](https://zdoc.app/fr/itrys/autoscan-spring-boot-starter) | 
+[日本語](https://zdoc.app/ja/itrys/autoscan-spring-boot-starter) | 
+[한국어](https://zdoc.app/ko/itrys/autoscan-spring-boot-starter) | 
+[Português](https://zdoc.app/pt/itrys/autoscan-spring-boot-starter) | 
+[Русский](https://zdoc.app/ru/itrys/autoscan-spring-boot-starter) | 
+[中文](https://zdoc.app/zh/itrys/autoscan-spring-boot-starter)
+
 ## 📖 Introduction
 
 In enterprise-level Spring Boot development, the package structure of technical infrastructure and business infrastructure is often fixed (e.g., `org.itrys.boot`, `org.itrys.base`), but business projects typically use the company's own domain packages (e.g., `com.company.project`). This causes the traditional `@ComponentScan` mechanism to be unable to scan both infrastructure packages and business packages simultaneously.
