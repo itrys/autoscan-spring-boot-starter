@@ -2,8 +2,11 @@
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 ![Maven Central](https://img.shields.io/maven-central/v/org.itrys/autoscan-spring-boot-starter.svg?label=Maven)
+[![GitHub release](https://img.shields.io/github/v/release/itrys/autoscan-spring-boot-starter?sort=semver)](https://github.com/itrys/autoscan-spring-boot-starter)
 [![License](https://img.shields.io/badge/JDK-17+-4EB1BA.svg)](https://docs.oracle.com/javase/17/docs/index.html)
 [![License](https://img.shields.io/badge/SpringBoot-3.2.0+-green.svg)](https://docs.spring.io/spring-boot/docs/2.1.5.RELEASE/reference/htmlsingle/)
+[![GitHub forks](https://img.shields.io/github/forks/itrys/autoscan-spring-boot-starter)](https://github.com/itrys/autoscan-spring-boot-starter/network)
+[![GitHub stars](https://img.shields.io/github/stars/itrys/autoscan-spring-boot-starter)](https://github.com/itrys/autoscan-spring-boot-starter/stargazers)
 
 > A lightweight Starter that solves the cross-package scanning pain point in Spring Boot, making infrastructure development so simple.
 
