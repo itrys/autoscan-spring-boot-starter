@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: AutoScanApplication
+auto-scan:
+  base-packages:
+    - org.example.boot        # 技术底座
+    - org.example.base        # 业务底座
+    - com.company.framework # 公司框架
+  dev-mode: true             # 开发模式，输出详细日志
