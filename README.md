@@ -10,6 +10,8 @@
 
 > A lightweight Starter that solves the cross-package scanning pain point in Spring Boot, making infrastructure development so simple.
 
+README: [English](https://github.com/grpc-ecosystem/grpc-spring/blob/master/README.md) | [中文](
+  
 ## 📖 Introduction
 
 In enterprise-level Spring Boot development, the package structure of technical infrastructure and business infrastructure is often fixed (e.g., `org.itrys.boot`, `org.itrys.base`), but business projects typically use the company's own domain packages (e.g., `com.company.project`). This causes the traditional `@ComponentScan` mechanism to be unable to scan both infrastructure packages and business packages simultaneously.
