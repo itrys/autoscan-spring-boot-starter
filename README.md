@@ -8,8 +8,6 @@
 [![GitHub forks](https://img.shields.io/github/forks/itrys/autoscan-spring-boot-starter)](https://github.com/itrys/autoscan-spring-boot-starter/network)
 [![GitHub stars](https://img.shields.io/github/stars/itrys/autoscan-spring-boot-starter)](https://github.com/itrys/autoscan-spring-boot-starter/stargazers)
 
-> A lightweight Starter that solves the cross-package scanning pain point in Spring Boot, making infrastructure development so simple.
-
 <!-- Keep these links. Translations will automatically update with the README. -->
 [Deutsch](https://zdoc.app/de/itrys/autoscan-spring-boot-starter) | 
 [English](https://zdoc.app/en/itrys/autoscan-spring-boot-starter) | 
@@ -20,6 +18,8 @@
 [Português](https://zdoc.app/pt/itrys/autoscan-spring-boot-starter) | 
 [Русский](https://zdoc.app/ru/itrys/autoscan-spring-boot-starter) | 
 [中文](https://zdoc.app/zh/itrys/autoscan-spring-boot-starter)
+
+> A lightweight Starter that solves the cross-package scanning pain point in Spring Boot, making infrastructure development so simple.
 
 ## 📖 Introduction
 
