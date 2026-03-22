@@ -10,6 +10,10 @@
     <name>autoscan-spring-boot-starter</name>
     <description>AutoScan Spring Boot Starter</description>
     <url>https://github.com/itrys/autoscan-spring-boot-starter</url>
+    <organization>
+        <name>ITrys</name>
+        <url>https://itrys.org</url>
+    </organization>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -66,21 +70,18 @@
             <artifactId>spring-boot-starter</artifactId>
             <scope>compile</scope>
         </dependency>
-
         <!-- Spring Boot Configuration Processor -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <scope>compile</scope>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -89,5 +90,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
