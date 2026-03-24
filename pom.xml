@@ -7,7 +7,7 @@
     <version>${revision}${changelist}</version>
     <packaging>jar</packaging>
 
-    <name>autoscan-spring-boot-starter</name>
+    <name>AutoScan Spring Boot Starter</name>
     <description>AutoScan Spring Boot Starter</description>
     <url>https://github.com/itrys/autoscan-spring-boot-starter</url>
     <organization>
@@ -23,9 +23,9 @@
     </licenses>
     <developers>
         <developer>
-            <id>denghuafeng</id>
             <name>denghuafeng</name>
             <email>denghuafeng@gmail.com</email>
+            <url>https://dhf.cc</url>
         </developer>
     </developers>
     <scm>
@@ -87,6 +87,53 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <!-- 1. 必须生成源码包 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals><goal>jar-no-fork</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- 2. 必须生成 Javadoc 包 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals><goal>jar</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- 3. GPG 签名插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals><goal>sign</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- 4. 发布插件 (推荐) -->
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                    <autoPublish>true</autoPublish>
+                </configuration>
             </plugin>
         </plugins>
     </build>
