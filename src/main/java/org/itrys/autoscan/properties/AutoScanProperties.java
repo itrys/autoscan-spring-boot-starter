@@ -4,50 +4,79 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 自动扫描配置属性
+ * Auto Scan Configuration Properties
  *
  * @author denghuafeng
  */
-//@ConfigurationProperties(prefix = "auto-scan")
 public class AutoScanProperties {
 
     /**
-     * 基础包路径列表（技术底座、业务底座等）
-     * 必须配置，用于扫描基础组件
+     * List of base package paths (technical foundation, business foundation, etc.)
+     * Must be configured, used to scan base components
      */
     private List<String> basePackages = new ArrayList<>();
 
     /**
-     * 业务包路径列表（可选）
-     * 仅当此项目作为其他项目的底座时才需要配置
+     * List of business package paths (optional)
+     * Only needed when this project is used as a foundation for other projects
      */
     private List<String> businessPackages = new ArrayList<>();
 
     /**
-     * 开发模式（用于输出详细日志）
+     * Development mode (used for outputting detailed logs)
      */
     private boolean devMode = false;
 
+    /**
+     * Get the list of base package paths
+     *
+     * @return List&lt;String&gt;
+     */
     public List<String> getBasePackages() {
         return basePackages;
     }
 
+    /**
+     * Set the list of base package paths
+     *
+     * @param basePackages List&lt;String&gt;
+     */
     public void setBasePackages(List<String> basePackages) {
         this.basePackages = basePackages;
     }
 
+    /**
+     * Get the list of business package paths
+     *
+     * @return List&lt;String&gt;
+     */
     public List<String> getBusinessPackages() {
         return businessPackages;
     }
 
+    /**
+     * Set the list of business package paths
+     *
+     * @param businessPackages List&lt;String&gt;
+     */
     public void setBusinessPackages(List<String> businessPackages) {
         this.businessPackages = businessPackages;
     }
 
+    /**
+     * Get development mode status
+     *
+     * @return boolean
+     */
     public boolean isDevMode() {
         return devMode;
     }
 
+    /**
+     * Set development mode
+     *
+     * @param devMode boolean
+     */
     public void setDevMode(boolean devMode) {
         this.devMode = devMode;
     }

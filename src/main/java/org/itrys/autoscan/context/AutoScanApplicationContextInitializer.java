@@ -16,16 +16,17 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 /**
- * 自动扫描应用上下文初始化器
+ * Auto Scan Application Context Initializer
  * <p>
- * 自动扫描配置的基础包路径，支持技术底座和业务底座的组件扫描
- * 业务项目基于底座开发时，无需配置 business-packages，
- * 因为 @SpringBootApplication 会自动扫描启动类所在包
+ * Automatically scans the base package paths for configuration, supporting component scanning
+ * for both technical foundation and business foundation components.
+ * When business projects are developed based on the foundation, there's no need to configure 'business-packages',
+ * because @SpringBootApplication automatically scans the package where the main application class resides.
  *
- * @author AutoScan
+ * @author denghuafeng
  */
 public class AutoScanApplicationContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-    // 使用统一的前缀常量，与 AutoScanProperties 保持一致
+    // Use a unified prefix constant, consistent with AutoScanProperties
     private static final String PREFIX = "auto-scan";
 
     @Override
@@ -37,7 +38,7 @@ public class AutoScanApplicationContextInitializer implements ApplicationContext
 
         ConfigurableEnvironment environment = applicationContext.getEnvironment();
 
-        // 检查是否为开发环境
+        // Check if it's a development environment
         List<String> devProfiles = Arrays.asList("dev", "local", "test");
         boolean isDev = Arrays.stream(environment.getActiveProfiles())
             .anyMatch(devProfiles::contains);
@@ -45,17 +46,17 @@ public class AutoScanApplicationContextInitializer implements ApplicationContext
         // Use ConfigurationProperties binding instead of direct Binder usage
         AutoScanProperties properties = new AutoScanProperties();
         Binder.get(environment).bind(PREFIX, Bindable.ofInstance(properties));
-        // 读取开发模式配置
+        // Read dev mode configuration
         boolean devMode = properties.isDevMode()||isDev;
 
         if (devMode) {
             System.out.println(">>> [AutoScan] Initializing base package scanner...");
         }
 
-        // 构建扫描包列表
+        // Build the list of packages to scan
         Set<String> packagesToScan = new LinkedHashSet<>();
-        
-        // 读取基础包配置（必须配置）
+
+        // Read base packages configuration (required)
         List<String> basePackages = properties.getBasePackages();
         
         if (basePackages.isEmpty()) {
@@ -68,41 +69,41 @@ public class AutoScanApplicationContextInitializer implements ApplicationContext
         if (devMode) {
             System.out.println(">>> [AutoScan] Configured base packages: " + basePackages);
         }
-        
-        // 添加基础包
+
+        // Add base packages
         for (String pkg : basePackages) {
             if (pkg != null && !pkg.trim().isEmpty()) {
                 packagesToScan.add(pkg.trim());
             }
         }
-        
-        // 读取业务包配置（可选，仅当此项目作为底座时才需要）
+
+        // Read business packages configuration (optional, only needed when this project is used as a foundation)
         List<String> businessPackages = properties.getBusinessPackages();
         
         if (!businessPackages.isEmpty() && devMode) {
             System.out.println(">>> [AutoScan] Configured business packages: " + businessPackages);
         }
-        
-        // 添加业务包（如果有配置）
+
+        // Add business packages (if configured)
         for (String pkg : businessPackages) {
             if (pkg != null && !pkg.trim().isEmpty()) {
                 packagesToScan.add(pkg.trim());
             }
         }
 
-        // 转为数组
+        // Convert to array
         String[] scanPackages = packagesToScan.toArray(new String[0]);
         
         if (devMode) {
             System.out.println(">>> [AutoScan] Final packages to scan: " + Arrays.toString(scanPackages));
         }
 
-        // 创建扫描器
+        // Create scanner
         ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(registry, false);
         scanner.addIncludeFilter(new AnnotationTypeFilter(Component.class));
         scanner.addIncludeFilter(new AnnotationTypeFilter(Configuration.class));
 
-        // 执行扫描
+        // Perform scanning
         int scannedCount = scanner.scan(scanPackages);
         
         if (devMode) {
