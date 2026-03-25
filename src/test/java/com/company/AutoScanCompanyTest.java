@@ -1,4 +1,4 @@
-package org.example;
+package com.company;
 
 import org.example.boot.TestComponent;
 import org.example.boot.TestConfiguration;
@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class AutoScanTest {
+class AutoScanCompanyTest {
 
     @Autowired
     private TestComponent testComponent;
