@@ -69,6 +69,114 @@ v1.1.0 is fully backward compatible with v1.0.0. Simply update the version:
 
 All existing configurations will continue to work without any changes.
 
+## 🔍 Comparison with Alternatives
+
+### AutoScan vs @Import vs @ComponentScan
+
+| Feature | AutoScan | @Import | @ComponentScan |
+|---------|----------|---------|----------------|
+| **Configuration** | YAML configuration | Annotation-based | Annotation-based |
+| **Wildcard Support** | ✅ Yes (`*`, `**`) | ❌ No | ❌ No |
+| **Exclude Support** | ✅ Yes | ❌ No | ✅ Yes |
+| **Custom Annotation** | ✅ Yes | ❌ No | ✅ Yes |
+| **Multi-project** | ✅ Excellent | ⚠️ Manual | ⚠️ Manual |
+| **Maintenance** | ✅ Low | ⚠️ Medium | ⚠️ Medium |
+| **Flexibility** | ✅ High | ⚠️ Medium | ⚠️ Medium |
+
+### When to Use AutoScan?
+
+✅ **Recommended Scenarios**:
+- Enterprise-level multi-module projects
+- Complex infrastructure architecture
+- Need wildcard package matching
+- Frequent addition of new components
+- Want centralized configuration management
+
+⚠️ **Alternative Scenarios**:
+- Simple single-module projects → Use `@ComponentScan`
+- Import specific configuration classes → Use `@Import`
+- Small team projects → Use `@ComponentScan`
+
+### Example Comparison
+
+**Using @ComponentScan** (Manual configuration for each project):
+```java
+@SpringBootApplication
+@ComponentScan({
+    "org.example.boot",
+    "org.example.business",
+    "com.company.project"
+})
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}
+```
+
+**Using AutoScan** (Configure once, works everywhere):
+```yaml
+# application.yml
+auto-scan:
+  base-packages:
+    - org.example.*
+    - com.company.**
+```
+
+```java
+@SpringBootApplication  // That's it!
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}
+```
+
+### 🚀 Future Roadmap
+
+AutoScan is evolving to provide comprehensive component scanning solutions:
+
+#### Coming in v1.2.0
+- **📦 @Import Compatibility** - Import specific classes directly in configuration
+  ```yaml
+  auto-scan:
+    import-classes:
+      - org.example.config.CoreConfig
+      - org.example.config.SecurityConfig
+  ```
+
+- **⚡ Lazy Initialization** - Support lazy bean initialization
+  ```yaml
+  auto-scan:
+    lazy-init: true  # Improve startup performance
+  ```
+
+#### Coming in v1.3.0
+- **🎯 Advanced Filtering** - Regex-based package filtering
+  ```yaml
+  auto-scan:
+    include-patterns:
+      - ".*Service"
+      - ".*Controller"
+  ```
+
+- **🔄 Conditional Configuration** - Environment-based scanning
+  ```yaml
+  auto-scan:
+    profiles:
+      dev:
+        dev-mode: true
+      prod:
+        dev-mode: false
+  ```
+
+#### Long-term Vision
+- **🔌 Plugin System** - Extensible scanning strategies
+- **📊 Monitoring Dashboard** - Visual scanning analysis
+- **🌐 Spring Cloud Integration** - Microservices optimization
+
+**Stay tuned!** Follow our [GitHub repository](https://github.com/itrys/autoscan-spring-boot-starter) for updates.
+
 ## ✨ Core Features
 
 - 🚀 **Automatic Base Package Scanning** - Configure once in infrastructure projects, effective for all dependent projects
@@ -175,6 +283,65 @@ auto-scan:
 ```
 
 **Note**: No need to configure `business-packages`, because `@SpringBootApplication` will automatically scan the package where the startup class is located!
+
+## 🏷️ Supported Annotations
+
+### @Component and Its Stereotype Annotations
+
+AutoScan automatically scans all Spring's built-in stereotype annotations derived from `@Component`:
+
+| Annotation | Package | Description |
+|------------|---------|-------------|
+| `@Component` | `org.springframework.stereotype` | Generic component annotation |
+| `@Service` | `org.springframework.stereotype` | Service layer component |
+| `@Repository` | `org.springframework.stereotype` | Data access layer component |
+| `@Controller` | `org.springframework.stereotype` | Web controller component |
+| `@RestController` | `org.springframework.web.bind.annotation` | RESTful web controller |
+| `@Configuration` | `org.springframework.context.annotation` | Configuration class |
+| `@Bean` | `org.springframework.context.annotation` | Bean definition method |
+
+### Default Scanning Behavior
+
+By default, AutoScan scans:
+- ✅ `@Component` and all its stereotype annotations
+- ✅ `@Configuration` and `@Bean` methods
+- ✅ Custom annotations derived from `@Component`
+
+### Custom Annotation Support (v1.1.0+)
+
+You can also configure custom annotations for scanning:
+
+```yaml
+auto-scan:
+  base-packages:
+    - org.example
+  
+  # Add custom annotations to scan
+  include-annotations:
+    - org.springframework.stereotype.Service
+    - org.springframework.stereotype.Controller
+    - com.company.annotation.CustomComponent  # Your custom annotation
+```
+
+### Creating Custom Annotations
+
+To create a custom component annotation:
+
+```java
+package com.company.annotation;
+
+import org.springframework.stereotype.Component;
+import java.lang.annotation.*;
+
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Component  // Important: Must be annotated with @Component
+public @interface CustomComponent {
+    String value() default "";
+}
+```
+
+**Note**: Custom annotations must be annotated with `@Component` to be recognized by Spring's component scanning mechanism.
 
 ## ⚙️ Configuration Details
 
