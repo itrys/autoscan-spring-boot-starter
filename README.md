@@ -252,11 +252,11 @@ auto-scan:
 ```
 Technical Infrastructure (org.example.boot)
     ↓
-Business Infrastructure A (com.company.framework)
+Business Infrastructure A (org.example.framework)
     ↓
-Business Infrastructure B (com.company.platform)
+Business Infrastructure B (org.example.platform)
     ↓
-Specific Business Project (com.company.project.xxx)
+Specific Business Project (com.project.xxx)
 ```
 
 Each infrastructure layer configures its own `base-packages`, upper layers automatically inherit.
