@@ -27,6 +27,48 @@ In enterprise-level Spring Boot development, the package structure of technical 
 
 **autoscan-spring-boot-starter** perfectly solves this pain point by implementing the `ApplicationContextInitializer` interface to automatically scan configured base packages during the early stage of Spring container startup.
 
+## 🎉 What's New in v1.1.0
+
+### ✨ New Features
+
+- **🌟 Wildcard Package Support** - Use `*` for single-level and `**` for multi-level package matching
+- **🚫 Exclude Scanning** - Exclude specific packages and classes from scanning
+- **🎨 Custom Annotation Scanning** - Define custom annotations for component scanning
+
+### 📋 Configuration Examples
+
+```yaml
+auto-scan:
+  # Wildcard support
+  base-packages:
+    - org.example.*        # Single-level wildcard
+    - com.company.**       # Multi-level wildcard
+  
+  # Exclude support
+  exclude-packages:
+    - org.example.test     # Exclude test packages
+  exclude-classes:
+    - org.example.demo.DemoClass  # Exclude specific class
+  
+  # Custom annotation support
+  include-annotations:
+    - com.company.annotation.CustomComponent
+```
+
+### 🔄 Migration from v1.0.0
+
+v1.1.0 is fully backward compatible with v1.0.0. Simply update the version:
+
+```xml
+<dependency>
+    <groupId>org.itrys</groupId>
+    <artifactId>autoscan-spring-boot-starter</artifactId>
+    <version>1.1.0</version>
+</dependency>
+```
+
+All existing configurations will continue to work without any changes.
+
 ## ✨ Core Features
 
 - 🚀 **Automatic Base Package Scanning** - Configure once in infrastructure projects, effective for all dependent projects
@@ -154,7 +196,7 @@ auto-scan:
   # Base package paths (required)
   # Supports wildcards: * for single level, ** for multi-level
   base-packages:
-    - org.example.*        # Match all first-level packages under org.itrys
+    - org.example.*        # Match all first-level packages under org.example
     - com.company.**     # Match all packages under com.company
   
   # Business package paths (optional)
@@ -286,7 +328,7 @@ Each infrastructure layer configures its own `base-packages`, upper layers autom
 ### Q5: How to use wildcards in package paths?
 
 **A**: Starting from version 1.1.0, you can use wildcards in package paths:
-- `*` - Matches a single level of packages (e.g., `org.itrys.*` matches `org.example.boot`, `org.itrys.base`, etc.)
+- `*` - Matches a single level of packages (e.g., `org.example.*` matches `org.example.boot`, `org.example.base`, etc.)
 - `**` - Matches multiple levels of packages (e.g., `com.company.**` matches all packages under `com.company`)
 
 ### Q6: How to configure custom annotations for scanning?
