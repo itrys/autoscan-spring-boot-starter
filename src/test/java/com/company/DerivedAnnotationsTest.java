@@ -1,4 +1,4 @@
-package org.example;
+package com.company;
 
 import org.example.boot.TestComponent;
 import org.example.boot.TestConfiguration;

@@ -1,9 +1,36 @@
 spring:
   application:
     name: AutoScanApplication
+
 auto-scan:
+  # Base package paths (required)
+  # Supports wildcards: * for single level, ** for multi-level
   base-packages:
-    - org.example.boot        # 技术底座
+    - org.example.boot        # Technical infrastructure
+    - org.example.wildcard.*  # Single-level wildcard
+    - org.example.**          # Multi-level wildcard (if needed)
+  
+  # Business package paths (optional)
   business-packages:
     - org.example.business
-  dev-mode: true             # 开发模式，输出详细日志
+  
+  # Exclude packages (optional) - v1.1.0+
+  exclude-packages:
+    - org.example.exclude.test    # Exclude test packages
+    - org.example.exclude.example # Exclude example packages
+  
+  # Exclude classes (optional) - v1.1.0+
+  exclude-classes:
+    - org.example.exclude.example.ExcludedComponent  # Exclude specific class
+  
+  # Include annotations (optional) - v1.1.0+
+  include-annotations:
+    - org.springframework.stereotype.Service
+    - org.springframework.stereotype.Controller
+    - org.example.annotation.CustomComponent  # Custom annotation
+  
+  # Development mode
+  # true: Output detailed scanning logs
+  # false: Silent mode
+  # Default is auto-detected based on spring.profiles.active (dev/local/test = true)
+  dev-mode: true

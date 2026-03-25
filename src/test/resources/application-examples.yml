@@ -1,0 +1,155 @@
+spring:
+  application:
+    name: AutoScanApplication
+
+# ============================================
+# Basic Configuration (v1.0.0)
+# ============================================
+auto-scan:
+  base-packages:
+    - org.example.boot
+    - org.example.business
+  dev-mode: true
+
+---
+# ============================================
+# Wildcard Configuration (v1.1.0)
+# ============================================
+spring:
+  config:
+    activate:
+      on-profile: wildcard
+
+auto-scan:
+  # Single-level wildcard: matches org.example.boot, org.example.business, etc.
+  base-packages:
+    - org.example.*
+  
+  # Multi-level wildcard: matches all packages under org.example
+  # base-packages:
+  #   - org.example.**
+  
+  dev-mode: true
+
+---
+# ============================================
+# Exclude Configuration (v1.1.0)
+# ============================================
+spring:
+  config:
+    activate:
+      on-profile: exclude
+
+auto-scan:
+  base-packages:
+    - org.example
+  
+  # Exclude specific packages
+  exclude-packages:
+    - org.example.test
+    - org.example.example
+  
+  # Exclude specific classes
+  exclude-classes:
+    - org.example.demo.DemoClass
+    - org.example.temp.TempComponent
+  
+  dev-mode: true
+
+---
+# ============================================
+# Custom Annotation Configuration (v1.1.0)
+# ============================================
+spring:
+  config:
+    activate:
+      on-profile: custom-annotation
+
+auto-scan:
+  base-packages:
+    - org.example
+  
+  # Scan components with custom annotations
+  include-annotations:
+    - org.springframework.stereotype.Service
+    - org.springframework.stereotype.Controller
+    - org.example.annotation.CustomComponent
+    - org.example.annotation.BusinessService
+  
+  dev-mode: true
+
+---
+# ============================================
+# Combined Features Configuration (v1.1.0)
+# ============================================
+spring:
+  config:
+    activate:
+      on-profile: combined
+
+auto-scan:
+  # Wildcard support
+  base-packages:
+    - org.example.*
+    - com.company.**
+  
+  # Exclude support
+  exclude-packages:
+    - org.example.test
+    - org.example.example
+  
+  exclude-classes:
+    - org.example.demo.DemoClass
+  
+  # Custom annotation support
+  include-annotations:
+    - org.springframework.stereotype.Service
+    - org.example.annotation.CustomComponent
+  
+  dev-mode: true
+
+---
+# ============================================
+# Production Configuration
+# ============================================
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+auto-scan:
+  base-packages:
+    - org.example.boot
+    - org.example.business
+  
+  # Disable dev mode in production
+  dev-mode: false
+  
+  # Exclude test and example packages
+  exclude-packages:
+    - org.example.test
+    - org.example.example
+
+---
+# ============================================
+# Development Configuration
+# ============================================
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+auto-scan:
+  # Use wildcards for flexibility in development
+  base-packages:
+    - org.example.*
+  
+  # Enable dev mode for detailed logs
+  dev-mode: true
+  
+  # Custom annotations for development
+  include-annotations:
+    - org.springframework.stereotype.Service
+    - org.springframework.stereotype.Controller
+    - org.springframework.stereotype.Repository
+    - org.example.annotation.CustomComponent
