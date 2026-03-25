@@ -35,6 +35,9 @@ In enterprise-level Spring Boot development, the package structure of technical 
 - 🔧 **Non-invasive Design** - Does not change existing code structure
 - 📊 **Developer Friendly** - Provides detailed scanning logs for easy debugging
 - ⚡ **Lightweight** - No extra dependencies, perfectly compatible with Spring Boot
+- 🌟 **Wildcard Package Support** - Supports single-level (`*`) and multi-level (`**`) wildcards for package paths
+- 🚫 **Exclude Scanning** - Supports excluding specific packages and classes from scanning
+- 🎨 **Custom Annotation Scanning** - Supports custom annotations for component scanning
 
 ## 🚀 Quick Start
 
@@ -44,7 +47,7 @@ In enterprise-level Spring Boot development, the package structure of technical 
 <dependency>
     <groupId>org.itrys</groupId>
     <artifactId>autoscan-spring-boot-starter</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
@@ -137,24 +140,42 @@ auto-scan:
 
 | Configuration Item | Type | Required | Description |
 |--------|------|------|------|
-| `auto-scan.base-packages` | List<String> | Yes | Base package path list for scanning technical infrastructure, business infrastructure, etc. |
-| `auto-scan.business-packages` | List<String> | No | Business package path list, only needed when this project serves as infrastructure for other projects |
+| `auto-scan.base-packages` | List<String> | Yes | Base package path list for scanning technical infrastructure, business infrastructure, etc. Supports wildcards (`*` for single level, `**` for multi-level) |
+| `auto-scan.business-packages` | List<String> | No | Business package path list, only needed when this project serves as infrastructure for other projects. Supports wildcards |
 | `auto-scan.dev-mode` | boolean | No | Development mode, outputs detailed scanning logs when set to `true`, defaults to auto-detection based on `spring.profiles.active` |
+| `auto-scan.exclude-packages` | List<String> | No | Package path list to exclude from scanning |
+| `auto-scan.exclude-classes` | List<String> | No | Class fully qualified name list to exclude from scanning |
+| `auto-scan.include-annotations` | List<String> | No | Annotation fully qualified name list to include in scanning |
 
 ### Complete Configuration Example
 
 ```yaml
 auto-scan:
   # Base package paths (required)
+  # Supports wildcards: * for single level, ** for multi-level
   base-packages:
-    - org.itrys.boot
-    - org.itrys.base
-    - com.company.framework
+    - org.itrys.*        # Match all first-level packages under org.itrys
+    - com.company.**     # Match all packages under com.company
   
   # Business package paths (optional)
   # Only needed when this project serves as infrastructure for other projects
   business-packages:
     - com.company.business
+  
+  # Exclude packages (optional)
+  exclude-packages:
+    - org.itrys.boot.test  # Exclude test packages
+    - org.itrys.boot.example  # Exclude example packages
+  
+  # Exclude classes (optional)
+  exclude-classes:
+    - org.itrys.boot.example.DemoClass  # Exclude specific class
+  
+  # Include annotations (optional)
+  include-annotations:
+    - org.springframework.stereotype.Service
+    - org.springframework.stereotype.Controller
+    - com.company.annotation.CustomComponent  # Custom annotation
   
   # Development mode
   # true: Output detailed scanning logs
@@ -172,10 +193,12 @@ autoscan-spring-boot-starter
 ├── AutoScanApplicationContextInitializer
 │   └── Implements ApplicationContextInitializer interface
 │   └── Executes scanning during early Spring container startup
+│   └── Supports wildcard resolution, exclude filtering, and custom annotations
 │
 ├── AutoScanProperties
 │   └── Configuration properties class
 │   └── Supports base-packages, business-packages, dev-mode
+│   └── Supports exclude-packages, exclude-classes, include-annotations
 │
 └── spring.factories
     └── Registers AutoScanApplicationContextInitializer
@@ -183,12 +206,14 @@ autoscan-spring-boot-starter
 
 ### Scanning Process
 
-1. **Read Configuration** - Read `auto-scan.base-packages` and `auto-scan.business-packages` from `application.yml`
-2. **Build Scan List** - Merge base packages and business packages, remove duplicates
-3. **Create Scanner** - Use `ClassPathBeanDefinitionScanner`
-4. **Set Filters** - Only scan `@Component` and `@Configuration` annotations
-5. **Execute Scan** - Scan all configured package paths
-6. **Register Components** - Register scanned components to Spring container
+1. **Read Configuration** - Read `auto-scan.base-packages`, `auto-scan.business-packages`, `auto-scan.exclude-packages`, `auto-scan.exclude-classes`, and `auto-scan.include-annotations` from `application.yml`
+2. **Resolve Wildcards** - Resolve wildcard patterns in package paths to actual package paths
+3. **Build Scan List** - Merge base packages and business packages, remove duplicates
+4. **Create Scanner** - Use `ClassPathBeanDefinitionScanner`
+5. **Set Filters** - Add filters for `@Component`, `@Configuration`, and custom annotations
+6. **Set Exclude Filters** - Add exclude filters for specified packages and classes
+7. **Execute Scan** - Scan all configured package paths
+8. **Register Components** - Register scanned components to Spring container
 
 ## 💡 Best Practices
 
@@ -244,19 +269,29 @@ Each infrastructure layer configures its own `base-packages`, upper layers autom
 
 ### Q2: How to exclude certain packages from scanning?
 
-**A**: The current version only supports inclusion scanning, exclusion is not yet supported. You can control the scanning scope by precisely configuring `base-packages`.
+**A**: Yes. Starting from version 1.1.0, you can configure `auto-scan.exclude-packages` to exclude specific packages and `auto-scan.exclude-classes` to exclude specific classes.
 
 ### Q3: Does it support Spring Boot 3.x?
 
-**A**: Yes. autoscan-spring-boot-starter 1.0.0 is developed based on Spring Boot 3.2.0, fully compatible with Spring Boot 3.x/4.x.
+**A**: Yes. autoscan-spring-boot-starter 1.1.0 is developed based on Spring Boot 3.2.0, fully compatible with Spring Boot 3.x/4.x.
 
 ### Q4: What if components cannot be scanned?
 
 **A**:
 1. Check if `auto-scan.base-packages` configuration is correct
 2. Enable `dev-mode: true` to view scanning logs
-3. Confirm if components are annotated with `@Component` or `@Configuration`
-4. Check if package paths contain wildcards (wildcards are not supported yet)
+3. Confirm if components are annotated with `@Component`, `@Configuration`, or other configured annotations
+4. Check if package paths contain unsupported wildcard patterns (v1.1.0+ supports `*` and `**` wildcards)
+
+### Q5: How to use wildcards in package paths?
+
+**A**: Starting from version 1.1.0, you can use wildcards in package paths:
+- `*` - Matches a single level of packages (e.g., `org.itrys.*` matches `org.itrys.boot`, `org.itrys.base`, etc.)
+- `**` - Matches multiple levels of packages (e.g., `com.company.**` matches all packages under `com.company`)
+
+### Q6: How to configure custom annotations for scanning?
+
+**A**: Starting from version 1.1.0, you can configure `auto-scan.include-annotations` to specify custom annotations for scanning, such as `com.company.annotation.CustomComponent`.
 
 ## 📊 Performance Notes
 

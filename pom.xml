@@ -34,7 +34,7 @@
         <url>https://github.com/itrys/autoscan-spring-boot-starter</url>
     </scm>
     <properties>
-        <revision>1.0.0</revision>
+        <revision>1.1.0</revision>
         <!-- Maven CI-Friendly 版本机制要求 -->
         <changelist></changelist>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

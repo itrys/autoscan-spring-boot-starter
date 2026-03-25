@@ -28,6 +28,21 @@ public class AutoScanProperties {
     private boolean devMode = false;
 
     /**
+     * List of packages to exclude from scanning
+     */
+    private List<String> excludePackages = new ArrayList<>();
+
+    /**
+     * List of classes to exclude from scanning
+     */
+    private List<String> excludeClasses = new ArrayList<>();
+
+    /**
+     * List of annotations to include in scanning
+     */
+    private List<String> includeAnnotations = new ArrayList<>();
+
+    /**
      * Get the list of base package paths
      *
      * @return List&lt;String&gt;
@@ -79,5 +94,59 @@ public class AutoScanProperties {
      */
     public void setDevMode(boolean devMode) {
         this.devMode = devMode;
+    }
+
+    /**
+     * Get the list of packages to exclude from scanning
+     *
+     * @return List&lt;String&gt;
+     */
+    public List<String> getExcludePackages() {
+        return excludePackages;
+    }
+
+    /**
+     * Set the list of packages to exclude from scanning
+     *
+     * @param excludePackages List&lt;String&gt;
+     */
+    public void setExcludePackages(List<String> excludePackages) {
+        this.excludePackages = excludePackages;
+    }
+
+    /**
+     * Get the list of classes to exclude from scanning
+     *
+     * @return List&lt;String&gt;
+     */
+    public List<String> getExcludeClasses() {
+        return excludeClasses;
+    }
+
+    /**
+     * Set the list of classes to exclude from scanning
+     *
+     * @param excludeClasses List&lt;String&gt;
+     */
+    public void setExcludeClasses(List<String> excludeClasses) {
+        this.excludeClasses = excludeClasses;
+    }
+
+    /**
+     * Get the list of annotations to include in scanning
+     *
+     * @return List&lt;String&gt;
+     */
+    public List<String> getIncludeAnnotations() {
+        return includeAnnotations;
+    }
+
+    /**
+     * Set the list of annotations to include in scanning
+     *
+     * @param includeAnnotations List&lt;String&gt;
+     */
+    public void setIncludeAnnotations(List<String> includeAnnotations) {
+        this.includeAnnotations = includeAnnotations;
     }
 }
