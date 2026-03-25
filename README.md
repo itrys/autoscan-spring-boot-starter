@@ -23,7 +23,7 @@
 
 ## 📖 Introduction
 
-In enterprise-level Spring Boot development, the package structure of technical infrastructure and business infrastructure is often fixed (e.g., `org.itrys.boot`, `org.itrys.base`), but business projects typically use the company's own domain packages (e.g., `com.company.project`). This causes the traditional `@ComponentScan` mechanism to be unable to scan both infrastructure packages and business packages simultaneously.
+In enterprise-level Spring Boot development, the package structure of technical infrastructure and business infrastructure is often fixed (e.g., `org.example.boot`, `org.example.business`), but business projects typically use the company's own domain packages (e.g., `com.company`). This causes the traditional `@ComponentScan` mechanism to be unable to scan both infrastructure packages and business packages simultaneously.
 
 **autoscan-spring-boot-starter** perfectly solves this pain point by implementing the `ApplicationContextInitializer` interface to automatically scan configured base packages during the early stage of Spring container startup.
 
@@ -58,21 +58,21 @@ Configure the base packages to be automatically scanned in `application.yml`:
 ```yaml
 auto-scan:
   base-packages:
-    - org.itrys.boot        # Technical infrastructure
-    - org.itrys.base        # Business infrastructure
-    - com.company.framework # Company framework
+    - org.example.boot        # Technical infrastructure
+  business-packages:
+    - org.example.business    # Business infrastructure
   dev-mode: true             # Development mode, output detailed logs
 ```
 
 ### 3. Start Application
 
 ```java
-package com.company.project;
+package com.company;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication  // Automatically scans com.company.project package and its sub-packages
+@SpringBootApplication  // Automatically scans com.company package and its sub-packages
 public class ProjectApplication {
     public static void main(String[] args) {
         SpringApplication.run(ProjectApplication.class, args);
@@ -84,10 +84,10 @@ After startup, the console will output scanning logs:
 
 ```
 >>> [AutoScan] Initializing base package scanner...
->>> [AutoScan] Configured base packages: [org.itrys.boot, org.itrys.base, com.company.framework]
->>> [AutoScan] Final packages to scan: [org.itrys.boot, org.itrys.base, com.company.framework]
->>> [AutoScan] Successfully registered 58 bean(s) from base packages.
-```
+>>> [AutoScan] Configured base packages: [org.example.boot]
+>>> [AutoScan] Configured business packages: [org.example.business]
+>>> [AutoScan] Final packages to scan: [org.example.boot, org.example.business]
+>>> [AutoScan] Successfully registered 11 bean(s) from base packages.```
 
 ## 📚 Use Cases
 
@@ -99,9 +99,9 @@ After startup, the console will output scanning logs:
 ```yaml
 auto-scan:
   base-packages:
-    - org.itrys.boot        # Core framework package
-    - org.itrys.common      # Common components package
-    - org.itrys.security    # Security components package
+    - org.example.boot        # Core framework package
+    - org.example.common      # Common components package
+    - org.example.security    # Security components package
 ```
 
 ### Case 2: Business Infrastructure Project
@@ -112,12 +112,12 @@ auto-scan:
 ```yaml
 auto-scan:
   base-packages:
-    - org.itrys.boot        # Include technical infrastructure
-    - com.company.framework # Business framework package
-    - com.company.security  # Security components package
+    - org.example.boot        # Include technical infrastructure
+    - org.example.framework   # Business framework package
+    - org.example.security    # Security components package
   # business-packages is optional, only configure when serving as infrastructure for other projects
   business-packages:
-    - com.company.business  # Common business package
+    - org.example.business    # Common business package
 ```
 
 ### Case 3: Regular Business Project (Most Common)
@@ -128,8 +128,8 @@ auto-scan:
 ```yaml
 auto-scan:
   base-packages:
-    - org.itrys.boot        # Technical infrastructure
-    - com.company.framework # Business infrastructure
+    - org.example.boot        # Technical infrastructure
+    - org.example.business    # Business infrastructure
 ```
 
 **Note**: No need to configure `business-packages`, because `@SpringBootApplication` will automatically scan the package where the startup class is located!
@@ -154,28 +154,28 @@ auto-scan:
   # Base package paths (required)
   # Supports wildcards: * for single level, ** for multi-level
   base-packages:
-    - org.itrys.*        # Match all first-level packages under org.itrys
+    - org.example.*        # Match all first-level packages under org.itrys
     - com.company.**     # Match all packages under com.company
   
   # Business package paths (optional)
   # Only needed when this project serves as infrastructure for other projects
   business-packages:
-    - com.company.business
+    - org.example.business
   
   # Exclude packages (optional)
   exclude-packages:
-    - org.itrys.boot.test  # Exclude test packages
-    - org.itrys.boot.example  # Exclude example packages
+    - org.example.boot.test  # Exclude test packages
+    - org.example.boot.example  # Exclude example packages
   
   # Exclude classes (optional)
   exclude-classes:
-    - org.itrys.boot.example.DemoClass  # Exclude specific class
+    - org.example.boot.example.DemoClass  # Exclude specific class
   
   # Include annotations (optional)
   include-annotations:
     - org.springframework.stereotype.Service
     - org.springframework.stereotype.Controller
-    - com.company.annotation.CustomComponent  # Custom annotation
+    - org.example.annotation.CustomComponent  # Custom annotation
   
   # Development mode
   # true: Output detailed scanning logs
@@ -219,22 +219,22 @@ autoscan-spring-boot-starter
 
 ### 1. Infrastructure Project Planning
 
-**Technical Infrastructure** (`org.itrys.boot`):
+**Technical Infrastructure** (`org.example.boot`):
 ```yaml
 auto-scan:
   base-packages:
-    - org.itrys.boot        # Core framework
-    - org.itrys.common      # Common utilities
-    - org.itrys.security    # Security components
+    - org.example.boot        # Core framework
+    - org.example.common      # Common utilities
+    - org.example.security    # Security components
 ```
 
 **Business Infrastructure** (`com.company.framework`):
 ```yaml
 auto-scan:
   base-packages:
-    - org.itrys.boot        # Include technical infrastructure
-    - com.company.core      # Business core
-    - com.company.system    # System management
+    - org.example.boot        # Include technical infrastructure
+    - org.example.core      # Business core
+    - org.example.system    # System management
 ```
 
 ### 2. Business Project Development
@@ -243,14 +243,14 @@ auto-scan:
 # Just include infrastructure, minimal configuration
 auto-scan:
   base-packages:
-    - org.itrys.boot
-    - com.company.core
+    - org.example.boot
+    - org.example.core
 ```
 
 ### 3. Multi-layer Infrastructure Architecture
 
 ```
-Technical Infrastructure (org.itrys.boot)
+Technical Infrastructure (org.example.boot)
     ↓
 Business Infrastructure A (com.company.framework)
     ↓
@@ -286,7 +286,7 @@ Each infrastructure layer configures its own `base-packages`, upper layers autom
 ### Q5: How to use wildcards in package paths?
 
 **A**: Starting from version 1.1.0, you can use wildcards in package paths:
-- `*` - Matches a single level of packages (e.g., `org.itrys.*` matches `org.itrys.boot`, `org.itrys.base`, etc.)
+- `*` - Matches a single level of packages (e.g., `org.itrys.*` matches `org.example.boot`, `org.itrys.base`, etc.)
 - `**` - Matches multiple levels of packages (e.g., `com.company.**` matches all packages under `com.company`)
 
 ### Q6: How to configure custom annotations for scanning?
