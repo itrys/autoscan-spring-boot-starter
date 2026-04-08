@@ -27,43 +27,46 @@ In enterprise-level Spring Boot development, the package structure of technical 
 
 **autoscan-spring-boot-starter** perfectly solves this pain point by implementing the `ApplicationContextInitializer` interface to automatically scan configured base packages during the early stage of Spring container startup.
 
-## 🎉 What's New in v1.1.0
+## 🎉 What's New in v1.2.0
 
 ### ✨ New Features
 
-- **🌟 Wildcard Package Support** - Use `*` for single-level and `**` for multi-level package matching
-- **🚫 Exclude Scanning** - Exclude specific packages and classes from scanning
-- **🎨 Custom Annotation Scanning** - Define custom annotations for component scanning
+- **🌟 @Import Compatibility** - Import specific classes directly in configuration
+- **⚡ Lazy Initialization** - Support lazy bean initialization for better performance
+- **🔧 Enabled Switch** - Enable or disable AutoScan component entirely
 
 ### 📋 Configuration Examples
 
 ```yaml
+# @Import compatibility
 auto-scan:
-  # Wildcard support
-  base-packages:
-    - org.example.*        # Single-level wildcard
-    - com.company.**       # Multi-level wildcard
-  
-  # Exclude support
-  exclude-packages:
-    - org.example.test     # Exclude test packages
-  exclude-classes:
-    - org.example.demo.DemoClass  # Exclude specific class
-  
-  # Custom annotation support
-  include-annotations:
-    - com.company.annotation.CustomComponent
+  imports:
+    - org.example.config.AppConfig
+    - org.example.config.WebConfig
+
+# Lazy initialization
+auto-scan:
+  lazy-initialization: true  # Global lazy initialization
+  lazy-packages:
+    - org.example.service     # Package-specific lazy initialization
+  lazy-classes:
+    - org.example.controller.UserController  # Class-specific lazy initialization
+
+# Enabled switch
+auto-scan:
+  enabled: true  # Enable AutoScan (default)
+  # enabled: false  # Disable AutoScan
 ```
 
-### 🔄 Migration from v1.0.0
+### 🔄 Migration from v1.1.0
 
-v1.1.0 is fully backward compatible with v1.0.0. Simply update the version:
+v1.2.0 is fully backward compatible with v1.1.0. Simply update the version:
 
 ```xml
 <dependency>
     <groupId>org.itrys</groupId>
     <artifactId>autoscan-spring-boot-starter</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 
@@ -79,6 +82,9 @@ All existing configurations will continue to work without any changes.
 | **Wildcard Support** | ✅ Yes (`*`, `**`) | ❌ No | ❌ No |
 | **Exclude Support** | ✅ Yes | ❌ No | ✅ Yes |
 | **Custom Annotation** | ✅ Yes | ❌ No | ✅ Yes |
+| **@Import Compatibility** | ✅ Yes | ✅ Yes | ❌ No |
+| **Lazy Initialization** | ✅ Yes | ❌ No | ✅ Yes |
+| **Enabled Switch** | ✅ Yes | ❌ No | ❌ No |
 | **Multi-project** | ✅ Excellent | ⚠️ Manual | ⚠️ Manual |
 | **Maintenance** | ✅ Low | ⚠️ Medium | ⚠️ Medium |
 | **Flexibility** | ✅ High | ⚠️ Medium | ⚠️ Medium |
@@ -136,21 +142,6 @@ public class Application {
 
 AutoScan is evolving to provide comprehensive component scanning solutions:
 
-#### Coming in v1.2.0
-- **📦 @Import Compatibility** - Import specific classes directly in configuration
-  ```yaml
-  auto-scan:
-    import-classes:
-      - org.example.config.CoreConfig
-      - org.example.config.SecurityConfig
-  ```
-
-- **⚡ Lazy Initialization** - Support lazy bean initialization
-  ```yaml
-  auto-scan:
-    lazy-init: true  # Improve startup performance
-  ```
-
 #### Coming in v1.3.0
 - **🎯 Advanced Filtering** - Regex-based package filtering
   ```yaml
@@ -188,6 +179,9 @@ AutoScan is evolving to provide comprehensive component scanning solutions:
 - 🌟 **Wildcard Package Support** - Supports single-level (`*`) and multi-level (`**`) wildcards for package paths
 - 🚫 **Exclude Scanning** - Supports excluding specific packages and classes from scanning
 - 🎨 **Custom Annotation Scanning** - Supports custom annotations for component scanning
+- 📦 **@Import Compatibility** - Supports direct import of specific classes in configuration
+- ⚡ **Lazy Initialization** - Supports lazy bean initialization for better performance
+- 🔧 **Enabled Switch** - Supports enabling or disabling AutoScan component entirely
 
 ## 🚀 Quick Start
 
@@ -197,7 +191,7 @@ AutoScan is evolving to provide comprehensive component scanning solutions:
 <dependency>
     <groupId>org.itrys</groupId>
     <artifactId>autoscan-spring-boot-starter</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 
@@ -355,11 +349,19 @@ public @interface CustomComponent {
 | `auto-scan.exclude-packages` | List<String> | No | Package path list to exclude from scanning |
 | `auto-scan.exclude-classes` | List<String> | No | Class fully qualified name list to exclude from scanning |
 | `auto-scan.include-annotations` | List<String> | No | Annotation fully qualified name list to include in scanning |
+| `auto-scan.imports` | List<String> | No | Class fully qualified name list to directly import (like @Import annotation) |
+| `auto-scan.lazy-initialization` | boolean | No | Global lazy initialization switch for all scanned beans |
+| `auto-scan.lazy-packages` | List<String> | No | Package path list for which beans should be lazily initialized |
+| `auto-scan.lazy-classes` | List<String> | No | Class fully qualified name list for which beans should be lazily initialized |
+| `auto-scan.enabled` | boolean | No | Enable or disable AutoScan component entirely, defaults to `true` |
 
 ### Complete Configuration Example
 
 ```yaml
 auto-scan:
+  # Enable or disable AutoScan component
+  enabled: true  # Default is true
+  
   # Base package paths (required)
   # Supports wildcards: * for single level, ** for multi-level
   base-packages:
@@ -386,6 +388,22 @@ auto-scan:
     - org.springframework.stereotype.Controller
     - org.example.annotation.CustomComponent  # Custom annotation
   
+  # Direct imports (optional) - v1.2.0+
+  imports:
+    - org.example.config.AppConfig
+    - org.example.config.WebConfig
+  
+  # Lazy initialization (optional) - v1.2.0+
+  # Global lazy initialization
+  lazy-initialization: true
+  # Package-specific lazy initialization
+  lazy-packages:
+    - org.example.service
+    - org.example.repository
+  # Class-specific lazy initialization
+  lazy-classes:
+    - org.example.controller.UserController
+  
   # Development mode
   # true: Output detailed scanning logs
   # false: Silent mode
@@ -403,11 +421,13 @@ autoscan-spring-boot-starter
 │   └── Implements ApplicationContextInitializer interface
 │   └── Executes scanning during early Spring container startup
 │   └── Supports wildcard resolution, exclude filtering, and custom annotations
+│   └── Supports @Import compatibility and lazy initialization
 │
 ├── AutoScanProperties
 │   └── Configuration properties class
 │   └── Supports base-packages, business-packages, dev-mode
 │   └── Supports exclude-packages, exclude-classes, include-annotations
+│   └── Supports imports, lazy-initialization, lazy-packages, lazy-classes, enabled
 │
 └── spring.factories
     └── Registers AutoScanApplicationContextInitializer
@@ -415,14 +435,17 @@ autoscan-spring-boot-starter
 
 ### Scanning Process
 
-1. **Read Configuration** - Read `auto-scan.base-packages`, `auto-scan.business-packages`, `auto-scan.exclude-packages`, `auto-scan.exclude-classes`, and `auto-scan.include-annotations` from `application.yml`
-2. **Resolve Wildcards** - Resolve wildcard patterns in package paths to actual package paths
-3. **Build Scan List** - Merge base packages and business packages, remove duplicates
-4. **Create Scanner** - Use `ClassPathBeanDefinitionScanner`
-5. **Set Filters** - Add filters for `@Component`, `@Configuration`, and custom annotations
-6. **Set Exclude Filters** - Add exclude filters for specified packages and classes
-7. **Execute Scan** - Scan all configured package paths
-8. **Register Components** - Register scanned components to Spring container
+1. **Read Configuration** - Read `auto-scan.base-packages`, `auto-scan.business-packages`, `auto-scan.exclude-packages`, `auto-scan.exclude-classes`, `auto-scan.include-annotations`, `auto-scan.imports`, `auto-scan.lazy-initialization`, `auto-scan.lazy-packages`, `auto-scan.lazy-classes`, and `auto-scan.enabled` from `application.yml`
+2. **Check Enabled Status** - Skip scanning if `auto-scan.enabled` is set to `false`
+3. **Resolve Wildcards** - Resolve wildcard patterns in package paths to actual package paths
+4. **Build Scan List** - Merge base packages and business packages, remove duplicates
+5. **Create Scanner** - Use `ClassPathBeanDefinitionScanner`
+6. **Set Filters** - Add filters for `@Component`, `@Configuration`, and custom annotations
+7. **Set Exclude Filters** - Add exclude filters for specified packages and classes
+8. **Execute Scan** - Scan all configured package paths
+9. **Register Components** - Register scanned components to Spring container
+10. **Handle Imports** - Import specified classes directly (like @Import annotation)
+11. **Handle Lazy Initialization** - Set lazy initialization for specified beans
 
 ## 💡 Best Practices
 
