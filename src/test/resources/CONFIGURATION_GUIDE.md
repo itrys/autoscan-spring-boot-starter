@@ -1,4 +1,4 @@
-# AutoScan v1.1.0 Configuration Guide
+# AutoScan v1.2.0 Configuration Guide
 
 ## Configuration File Structure
 
@@ -141,6 +141,102 @@ auto-scan:
   # dev-mode will be auto-detected
 ```
 
+### 7. imports (Optional) - v1.2.0+
+
+**Type**: `List<String>`
+
+**Description**: Fully qualified class names to directly import (like `@Import` annotation).
+
+**Examples**:
+
+```yaml
+# Import single class
+auto-scan:
+  imports:
+    - org.example.config.AppConfig
+
+# Import multiple classes
+auto-scan:
+  imports:
+    - org.example.config.AppConfig
+    - org.example.config.WebConfig
+    - org.example.config.SecurityConfig
+```
+
+### 8. lazy-initialization (Optional) - v1.2.0+
+
+**Type**: `boolean`
+
+**Default**: `false`
+
+**Description**: Enable global lazy initialization for all scanned beans.
+
+**Examples**:
+
+```yaml
+# Enable global lazy initialization
+auto-scan:
+  lazy-initialization: true
+
+# Disable global lazy initialization (default)
+auto-scan:
+  lazy-initialization: false
+```
+
+### 9. lazy-packages (Optional) - v1.2.0+
+
+**Type**: `List<String>`
+
+**Description**: Package paths for which beans should be lazily initialized.
+
+**Examples**:
+
+```yaml
+# Specify packages for lazy initialization
+auto-scan:
+  lazy-packages:
+    - org.example.service
+    - org.example.repository
+    - org.example.controller
+```
+
+### 10. lazy-classes (Optional) - v1.2.0+
+
+**Type**: `List<String>`
+
+**Description**: Fully qualified class names for which beans should be lazily initialized.
+
+**Examples**:
+
+```yaml
+# Specify classes for lazy initialization
+auto-scan:
+  lazy-classes:
+    - org.example.controller.UserController
+    - org.example.service.UserService
+    - org.example.repository.UserRepository
+```
+
+### 11. enabled (Optional) - v1.2.0+
+
+**Type**: `boolean`
+
+**Default**: `true`
+
+**Description**: Enable or disable the AutoScan component entirely.
+
+**Examples**:
+
+```yaml
+# Enable AutoScan (default)
+auto-scan:
+  enabled: true
+
+# Disable AutoScan
+auto-scan:
+  enabled: false
+```
+
 ## Configuration Scenarios
 
 ### Scenario 1: Basic Infrastructure Project
@@ -221,6 +317,77 @@ auto-scan:
   dev-mode: true  # Enable detailed logs
 ```
 
+### Scenario 7: @Import Compatibility (v1.2.0+)
+
+```yaml
+spring:
+  profiles:
+    active: import
+
+auto-scan:
+  base-packages:
+    - org.example
+  imports:
+    - org.example.config.AppConfig
+    - org.example.config.WebConfig
+    - org.example.config.SecurityConfig
+  dev-mode: true
+```
+
+### Scenario 8: Lazy Initialization (v1.2.0+)
+
+```yaml
+spring:
+  profiles:
+    active: lazy
+
+auto-scan:
+  base-packages:
+    - org.example
+  lazy-initialization: true  # Enable global lazy initialization
+  lazy-packages:
+    - org.example.service  # Additional package-specific lazy initialization
+  lazy-classes:
+    - org.example.controller.UserController  # Additional class-specific lazy initialization
+  dev-mode: true
+```
+
+### Scenario 9: Combined Features (v1.2.0+)
+
+```yaml
+spring:
+  profiles:
+    active: combined
+
+auto-scan:
+  base-packages:
+    - org.example.*
+  imports:
+    - org.example.config.AppConfig
+    - org.example.config.WebConfig
+  lazy-initialization: true
+  lazy-packages:
+    - org.example.service
+  exclude-packages:
+    - org.example.test
+  dev-mode: true
+```
+
+### Scenario 10: Disable AutoScan (v1.2.0+)
+
+```yaml
+spring:
+  profiles:
+    active: disabled
+
+auto-scan:
+  enabled: false  # Disable AutoScan entirely
+  # Other configurations will be ignored when enabled is false
+  base-packages:
+    - org.example
+  dev-mode: true
+```
+
 ## Configuration Priority
 
 When using multiple configuration files, the priority is:
@@ -270,6 +437,21 @@ When using multiple configuration files, the priority is:
 1. Verify exclude configuration syntax
 2. Check if package path or class name is correct
 3. Ensure exclude configuration is in the correct profile
+
+## Migration from v1.1.0 to v1.2.0
+
+v1.2.0 is fully backward compatible with v1.1.0. Existing configurations will continue to work without any changes.
+
+**New features in v1.2.0**:
+- @Import compatibility - Directly import specific classes
+- Lazy initialization - Support lazy loading for beans
+- Enabled switch - Enable or disable AutoScan entirely
+
+**Migration steps**:
+1. Update dependency version to 1.2.0
+2. (Optional) Add `imports` configuration to directly import classes
+3. (Optional) Add `lazy-initialization`, `lazy-packages`, or `lazy-classes` configuration for lazy loading
+4. (Optional) Add `enabled` configuration to control AutoScan activation
 
 ## Migration from v1.0.0 to v1.1.0
 

@@ -34,3 +34,33 @@ auto-scan:
   # false: Silent mode
   # Default is auto-detected based on spring.profiles.active (dev/local/test = true)
   dev-mode: true
+  
+  # Enable switch - v1.2.0+
+  # true: Enable AutoScan
+  # false: Disable AutoScan
+  # Default: true
+  enabled: true
+  
+  # @Import compatibility - v1.2.0+
+  # Directly import specific classes, similar to @Import annotation
+  # imports:
+  #   - org.example.config.AppConfig
+  #   - org.example.config.WebConfig
+  
+  # Lazy initialization - v1.2.0+
+  # true: Enable lazy initialization for all scanned beans
+  # false: Disable lazy initialization
+  # Default: false
+  # lazy-initialization: true
+  
+  # Lazy packages - v1.2.0+
+  # Enable lazy initialization for specific packages
+  # lazy-packages:
+  #   - org.example.service
+  #   - org.example.repository
+  
+  # Lazy classes - v1.2.0+
+  # Enable lazy initialization for specific classes
+  # lazy-classes:
+  #   - org.example.controller.UserController
+  #   - org.example.service.OrderService

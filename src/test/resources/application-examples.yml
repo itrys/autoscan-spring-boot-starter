@@ -153,3 +153,110 @@ auto-scan:
     - org.springframework.stereotype.Controller
     - org.springframework.stereotype.Repository
     - org.example.annotation.CustomComponent
+
+---
+# ============================================
+# @Import Compatibility Configuration (v1.2.0)
+# ============================================
+spring:
+  config:
+    activate:
+      on-profile: import
+
+auto-scan:
+  base-packages:
+    - org.example
+  
+  # Import single class
+  # imports:
+  #   - org.example.config.AppConfig
+  
+  # Import multiple classes
+  imports:
+    - org.example.config.AppConfig
+    - org.example.config.WebConfig
+    - org.example.config.SecurityConfig
+  
+  dev-mode: true
+
+---
+# ============================================
+# Lazy Initialization Configuration (v1.2.0)
+# ============================================
+spring:
+  config:
+    activate:
+      on-profile: lazy
+
+auto-scan:
+  base-packages:
+    - org.example
+  
+  # Enable global lazy initialization
+  lazy-initialization: true
+  
+  # Specify packages for lazy initialization
+  lazy-packages:
+    - org.example.service
+    - org.example.repository
+  
+  # Specify classes for lazy initialization
+  lazy-classes:
+    - org.example.controller.UserController
+    - org.example.service.UserService
+  
+  dev-mode: true
+
+---
+# ============================================
+# Combined Features Configuration (v1.2.0)
+# ============================================
+spring:
+  config:
+    activate:
+      on-profile: combined-v120
+
+auto-scan:
+  base-packages:
+    - org.example.*
+  
+  # Import classes
+  imports:
+    - org.example.config.AppConfig
+    - org.example.config.WebConfig
+  
+  # Enable global lazy initialization
+  lazy-initialization: true
+  
+  # Specify packages for lazy initialization
+  lazy-packages:
+    - org.example.service
+  
+  # Specify classes for lazy initialization
+  lazy-classes:
+    - org.example.controller.UserController
+  
+  # Exclude specific packages
+  exclude-packages:
+    - org.example.test
+  
+  dev-mode: true
+
+---
+# ============================================
+# Disable AutoScan Configuration (v1.2.0)
+# ============================================
+spring:
+  config:
+    activate:
+      on-profile: disabled
+
+auto-scan:
+  # Disable AutoScan component
+  enabled: false
+  
+  # These configurations will be ignored when enabled is false
+  base-packages:
+    - org.example
+  
+  dev-mode: true
