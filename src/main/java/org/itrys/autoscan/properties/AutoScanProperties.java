@@ -11,6 +11,11 @@ import java.util.List;
 public class AutoScanProperties {
 
     /**
+     * Enable AutoScan component
+     */
+    private boolean enabled = true;
+
+    /**
      * List of base package paths (technical foundation, business foundation, etc.)
      * Must be configured, used to scan base components
      */
@@ -41,6 +46,26 @@ public class AutoScanProperties {
      * List of annotations to include in scanning
      */
     private List<String> includeAnnotations = new ArrayList<>();
+
+    /**
+     * List of classes to directly import (like @Import annotation)
+     */
+    private List<String> imports = new ArrayList<>();
+
+    /**
+     * Global lazy initialization switch
+     */
+    private boolean lazyInitialization = false;
+
+    /**
+     * List of packages for lazy initialization
+     */
+    private List<String> lazyPackages = new ArrayList<>();
+
+    /**
+     * List of classes for lazy initialization
+     */
+    private List<String> lazyClasses = new ArrayList<>();
 
     /**
      * Get the list of base package paths
@@ -148,5 +173,95 @@ public class AutoScanProperties {
      */
     public void setIncludeAnnotations(List<String> includeAnnotations) {
         this.includeAnnotations = includeAnnotations;
+    }
+
+    /**
+     * Get the list of classes to directly import
+     *
+     * @return List&lt;String&gt;
+     */
+    public List<String> getImports() {
+        return imports;
+    }
+
+    /**
+     * Set the list of classes to directly import
+     *
+     * @param imports List&lt;String&gt;
+     */
+    public void setImports(List<String> imports) {
+        this.imports = imports;
+    }
+
+    /**
+     * Get global lazy initialization status
+     *
+     * @return boolean
+     */
+    public boolean isLazyInitialization() {
+        return lazyInitialization;
+    }
+
+    /**
+     * Set global lazy initialization
+     *
+     * @param lazyInitialization boolean
+     */
+    public void setLazyInitialization(boolean lazyInitialization) {
+        this.lazyInitialization = lazyInitialization;
+    }
+
+    /**
+     * Get the list of packages for lazy initialization
+     *
+     * @return List&lt;String&gt;
+     */
+    public List<String> getLazyPackages() {
+        return lazyPackages;
+    }
+
+    /**
+     * Set the list of packages for lazy initialization
+     *
+     * @param lazyPackages List&lt;String&gt;
+     */
+    public void setLazyPackages(List<String> lazyPackages) {
+        this.lazyPackages = lazyPackages;
+    }
+
+    /**
+     * Get the list of classes for lazy initialization
+     *
+     * @return List&lt;String&gt;
+     */
+    public List<String> getLazyClasses() {
+        return lazyClasses;
+    }
+
+    /**
+     * Set the list of classes for lazy initialization
+     *
+     * @param lazyClasses List&lt;String&gt;
+     */
+    public void setLazyClasses(List<String> lazyClasses) {
+        this.lazyClasses = lazyClasses;
+    }
+
+    /**
+     * Get AutoScan enabled status
+     *
+     * @return boolean
+     */
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    /**
+     * Set AutoScan enabled status
+     *
+     * @param enabled boolean
+     */
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

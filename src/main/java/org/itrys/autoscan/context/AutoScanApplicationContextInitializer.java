@@ -15,6 +15,9 @@ import org.springframework.core.type.ClassMetadata;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
 import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Import;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.AnnotatedBeanDefinitionReader;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,8 +55,17 @@ public class AutoScanApplicationContextInitializer implements ApplicationContext
         // Use ConfigurationProperties binding instead of direct Binder usage
         AutoScanProperties properties = new AutoScanProperties();
         Binder.get(environment).bind(PREFIX, Bindable.ofInstance(properties));
+        
         // Read dev mode configuration
         boolean devMode = properties.isDevMode()||isDev;
+        
+        // Check if AutoScan is enabled
+        if (!properties.isEnabled()) {
+            if (devMode) {
+                System.out.println(">>> [AutoScan] AutoScan is disabled. Skip scanning.");
+            }
+            return;
+        }
 
         if (devMode) {
             System.out.println(">>> [AutoScan] Initializing base package scanner...");
@@ -129,6 +141,23 @@ public class AutoScanApplicationContextInitializer implements ApplicationContext
         
         if (devMode) {
             System.out.println(">>> [AutoScan] Successfully registered " + scannedCount + " bean(s) from base packages.");
+        }
+        
+        // Handle direct imports (like @Import annotation)
+        List<String> imports = properties.getImports();
+        if (!imports.isEmpty()) {
+            int importedCount = handleImports(imports, registry, devMode);
+            if (devMode) {
+                System.out.println(">>> [AutoScan] Successfully imported " + importedCount + " class(es).");
+            }
+        }
+        
+        // Handle lazy initialization
+        boolean globalLazy = properties.isLazyInitialization();
+        List<String> lazyPackages = properties.getLazyPackages();
+        List<String> lazyClasses = properties.getLazyClasses();
+        if (globalLazy || !lazyPackages.isEmpty() || !lazyClasses.isEmpty()) {
+            handleLazyInitialization(registry, globalLazy, lazyPackages, lazyClasses, devMode);
         }
     }
 
@@ -280,5 +309,76 @@ public class AutoScanApplicationContextInitializer implements ApplicationContext
                 System.out.println(">>> [AutoScan] Added exclude filter for classes: " + excludeClasses);
             }
         }
+    }
+
+    /**
+     * Handle direct imports (like @Import annotation)
+     */
+    private int handleImports(List<String> imports, BeanDefinitionRegistry registry, boolean devMode) {
+        int importedCount = 0;
+        AnnotatedBeanDefinitionReader reader = new AnnotatedBeanDefinitionReader(registry);
+        
+        for (String className : imports) {
+            try {
+                Class<?> clazz = Class.forName(className);
+                reader.register(clazz);
+                importedCount++;
+                if (devMode) {
+                    System.out.println(">>> [AutoScan] Imported class: " + className);
+                }
+            } catch (ClassNotFoundException e) {
+                System.err.println(">>> [AutoScan] Class not found for import: " + className);
+            }
+        }
+        
+        return importedCount;
+    }
+
+    /**
+     * Handle lazy initialization
+     */
+    private void handleLazyInitialization(BeanDefinitionRegistry registry, boolean globalLazy, 
+                                         List<String> lazyPackages, List<String> lazyClasses, boolean devMode) {
+        String[] beanNames = registry.getBeanDefinitionNames();
+        int lazyCount = 0;
+        
+        for (String beanName : beanNames) {
+            BeanDefinition definition = registry.getBeanDefinition(beanName);
+            String beanClassName = definition.getBeanClassName();
+            
+            if (beanClassName != null) {
+                boolean shouldBeLazy = globalLazy || 
+                        isInLazyPackages(beanClassName, lazyPackages) || 
+                        isInLazyClasses(beanClassName, lazyClasses);
+                
+                if (shouldBeLazy) {
+                    definition.setLazyInit(true);
+                    lazyCount++;
+                }
+            }
+        }
+        
+        if (devMode) {
+            System.out.println(">>> [AutoScan] Set lazy initialization for " + lazyCount + " bean(s).");
+        }
+    }
+
+    /**
+     * Check if class is in lazy packages
+     */
+    private boolean isInLazyPackages(String className, List<String> lazyPackages) {
+        for (String lazyPackage : lazyPackages) {
+            if (className.startsWith(lazyPackage)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if class is in lazy classes
+     */
+    private boolean isInLazyClasses(String className, List<String> lazyClasses) {
+        return lazyClasses.contains(className);
     }
 }
