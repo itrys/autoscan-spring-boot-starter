@@ -2,25 +2,20 @@ package org.itrys.autoscan.context;
 
 import jakarta.annotation.Nonnull;
 import org.itrys.autoscan.properties.AutoScanProperties;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.AnnotatedBeanDefinitionReader;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.type.AnnotationMetadata;
-import org.springframework.core.type.ClassMetadata;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
-import org.springframework.core.type.filter.TypeFilter;
 import org.springframework.stereotype.Component;
-import org.springframework.context.annotation.Import;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.AnnotatedBeanDefinitionReader;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -55,10 +50,10 @@ public class AutoScanApplicationContextInitializer implements ApplicationContext
         // Use ConfigurationProperties binding instead of direct Binder usage
         AutoScanProperties properties = new AutoScanProperties();
         Binder.get(environment).bind(PREFIX, Bindable.ofInstance(properties));
-        
+
         // Read dev mode configuration
         boolean devMode = properties.isDevMode()||isDev;
-        
+
         // Check if AutoScan is enabled
         if (!properties.isEnabled()) {
             if (devMode) {
@@ -132,8 +127,15 @@ public class AutoScanApplicationContextInitializer implements ApplicationContext
         // Add exclude filters
         List<String> excludePackages = properties.getExcludePackages();
         List<String> excludeClasses = properties.getExcludeClasses();
-        if (!excludePackages.isEmpty() || !excludeClasses.isEmpty()) {
-            addExcludeFilters(scanner, excludePackages, excludeClasses, devMode);
+        List<String> excludePackagesRegex = properties.getExcludePackagesRegex();
+        if (!excludePackages.isEmpty() || !excludeClasses.isEmpty() || !excludePackagesRegex.isEmpty()) {
+            addExcludeFilters(scanner, excludePackages, excludeClasses, excludePackagesRegex, devMode);
+        }
+
+        // Add include filters based on regex
+        List<String> includePackagesRegex = properties.getIncludePackagesRegex();
+        if (!includePackagesRegex.isEmpty()) {
+            addIncludeFilters(scanner, includePackagesRegex, devMode);
         }
 
         // Perform scanning
@@ -278,9 +280,51 @@ public class AutoScanApplicationContextInitializer implements ApplicationContext
     }
 
     /**
+     * Add include filters based on regex
+     */
+    private void addIncludeFilters(ClassPathBeanDefinitionScanner scanner, List<String> includePackagesRegex, boolean devMode) {
+        // Compile regex patterns
+        List<java.util.regex.Pattern> regexPatterns = new ArrayList<>();
+        for (String regex : includePackagesRegex) {
+            try {
+                regexPatterns.add(java.util.regex.Pattern.compile(regex));
+            } catch (Exception e) {
+                System.err.println(">>> [AutoScan] Invalid regex pattern: " + regex + ", error: " + e.getMessage());
+            }
+        }
+        
+        scanner.addIncludeFilter((metadataReader, metadataReaderFactory) -> {
+            String className = metadataReader.getClassMetadata().getClassName();
+            
+            // Check if class matches any include regex pattern
+            for (java.util.regex.Pattern pattern : regexPatterns) {
+                if (pattern.matcher(className).matches()) {
+                    return true;
+                }
+            }
+            
+            return false;
+        });
+        
+        if (devMode) {
+            System.out.println(">>> [AutoScan] Added include filter for regex packages: " + includePackagesRegex);
+        }
+    }
+
+    /**
      * Add exclude filters
      */
-    private void addExcludeFilters(ClassPathBeanDefinitionScanner scanner, List<String> excludePackages, List<String> excludeClasses, boolean devMode) {
+    private void addExcludeFilters(ClassPathBeanDefinitionScanner scanner, List<String> excludePackages, List<String> excludeClasses, List<String> excludePackagesRegex, boolean devMode) {
+        // Compile regex patterns
+        List<java.util.regex.Pattern> regexPatterns = new ArrayList<>();
+        for (String regex : excludePackagesRegex) {
+            try {
+                regexPatterns.add(java.util.regex.Pattern.compile(regex));
+            } catch (Exception e) {
+                System.err.println(">>> [AutoScan] Invalid regex pattern: " + regex + ", error: " + e.getMessage());
+            }
+        }
+        
         scanner.addExcludeFilter((metadataReader, metadataReaderFactory) -> {
             String className = metadataReader.getClassMetadata().getClassName();
             
@@ -298,6 +342,13 @@ public class AutoScanApplicationContextInitializer implements ApplicationContext
                 }
             }
             
+            // Check if class matches any exclude regex pattern
+            for (java.util.regex.Pattern pattern : regexPatterns) {
+                if (pattern.matcher(className).matches()) {
+                    return true;
+                }
+            }
+            
             return false;
         });
         
@@ -307,6 +358,9 @@ public class AutoScanApplicationContextInitializer implements ApplicationContext
             }
             if (!excludeClasses.isEmpty()) {
                 System.out.println(">>> [AutoScan] Added exclude filter for classes: " + excludeClasses);
+            }
+            if (!excludePackagesRegex.isEmpty()) {
+                System.out.println(">>> [AutoScan] Added exclude filter for regex packages: " + excludePackagesRegex);
             }
         }
     }

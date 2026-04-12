@@ -68,6 +68,16 @@ public class AutoScanProperties {
     private List<String> lazyClasses = new ArrayList<>();
 
     /**
+     * List of regex patterns for packages to exclude from scanning
+     */
+    private List<String> excludePackagesRegex = new ArrayList<>();
+
+    /**
+     * List of regex patterns for packages to include in scanning
+     */
+    private List<String> includePackagesRegex = new ArrayList<>();
+
+    /**
      * Get the list of base package paths
      *
      * @return List&lt;String&gt;
@@ -263,5 +273,41 @@ public class AutoScanProperties {
      */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    /**
+     * Get the list of regex patterns for packages to exclude from scanning
+     *
+     * @return List<String>
+     */
+    public List<String> getExcludePackagesRegex() {
+        return excludePackagesRegex;
+    }
+
+    /**
+     * Set the list of regex patterns for packages to exclude from scanning
+     *
+     * @param excludePackagesRegex List<String>
+     */
+    public void setExcludePackagesRegex(List<String> excludePackagesRegex) {
+        this.excludePackagesRegex = excludePackagesRegex;
+    }
+
+    /**
+     * Get the list of regex patterns for packages to include in scanning
+     *
+     * @return List<String>
+     */
+    public List<String> getIncludePackagesRegex() {
+        return includePackagesRegex;
+    }
+
+    /**
+     * Set the list of regex patterns for packages to include in scanning
+     *
+     * @param includePackagesRegex List<String>
+     */
+    public void setIncludePackagesRegex(List<String> includePackagesRegex) {
+        this.includePackagesRegex = includePackagesRegex;
     }
 }

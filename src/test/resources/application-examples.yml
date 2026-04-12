@@ -260,3 +260,106 @@ auto-scan:
     - org.example
   
   dev-mode: true
+
+---
+# ============================================
+# Regex Filter Configuration (v1.3.0)
+# ============================================
+spring:
+  config:
+    activate:
+      on-profile: regex
+
+auto-scan:
+  base-packages:
+    - org.example
+  
+  # Regex patterns for excluding packages
+  exclude-packages-regex:
+    - org\.example\.test\..*
+    - org\.example\.example\..*
+    - .*\.temp\..*
+  
+  # Regex patterns for including packages
+  include-packages-regex:
+    - org\.example\.boot\..*
+    - org\.example\.business\..*
+    - org\.example\.controller\..*
+  
+  dev-mode: true
+
+---
+# ============================================
+# Environment-based Conditional Scanning (v1.3.0)
+# ============================================
+spring:
+  config:
+    activate:
+      on-profile: env-dev
+
+auto-scan:
+  # Development environment configuration
+  base-packages:
+    - org.example.*
+  
+  # Enable dev mode for detailed logs
+  dev-mode: true
+  
+  # Include all components in development
+  include-annotations:
+    - org.springframework.stereotype.Component
+    - org.springframework.stereotype.Service
+    - org.springframework.stereotype.Controller
+    - org.springframework.stereotype.Repository
+  
+  # Exclude only test packages
+  exclude-packages:
+    - org.example.test
+
+---
+spring:
+  config:
+    activate:
+      on-profile: env-test
+
+auto-scan:
+  # Test environment configuration
+  base-packages:
+    - org.example
+  
+  # Enable dev mode for test environment
+  dev-mode: true
+  
+  # Include specific components for testing
+  include-annotations:
+    - org.springframework.stereotype.Service
+    - org.springframework.stereotype.Controller
+    - org.springframework.stereotype.Repository
+  
+  # Exclude test and example packages
+  exclude-packages:
+    - org.example.test
+    - org.example.example
+
+---
+spring:
+  config:
+    activate:
+      on-profile: env-prod
+
+auto-scan:
+  # Production environment configuration
+  base-packages:
+    - org.example.boot
+    - org.example.business
+    - org.example.controller
+  
+  # Disable dev mode in production
+  dev-mode: false
+  
+  # Use regex to exclude unnecessary packages
+  exclude-packages-regex:
+    - org\.example\.test\..*
+    - org\.example\.example\..*
+    - .*\.temp\..*
+    - .*\.demo\..*

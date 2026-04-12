@@ -27,46 +27,75 @@ In enterprise-level Spring Boot development, the package structure of technical 
 
 **autoscan-spring-boot-starter** perfectly solves this pain point by implementing the `ApplicationContextInitializer` interface to automatically scan configured base packages during the early stage of Spring container startup.
 
-## 🎉 What's New in v1.2.0
+## 🎉 What's New in v1.3.0
 
 ### ✨ New Features
 
-- **🌟 @Import Compatibility** - Import specific classes directly in configuration
-- **⚡ Lazy Initialization** - Support lazy bean initialization for better performance
-- **🔧 Enabled Switch** - Enable or disable AutoScan component entirely
+- **🌟 Advanced Filtering** - Regex-based package filtering for more flexible scanning control
+- **🔄 Conditional Configuration** - Environment-based scanning configuration
 
 ### 📋 Configuration Examples
 
 ```yaml
-# @Import compatibility
+# Regex-based package filtering
 auto-scan:
-  imports:
-    - org.example.config.AppConfig
-    - org.example.config.WebConfig
+  base-packages:
+    - org.example
+  
+  # Regex patterns for excluding packages
+  exclude-packages-regex:
+    - org\.example\.test\..*
+    - org\.example\.example\..*
+    - .*\.temp\..*
+  
+  # Regex patterns for including packages
+  include-packages-regex:
+    - org\.example\.boot\..*
+    - org\.example\.business\..*
+    - org\.example\.controller\..*
 
-# Lazy initialization
-auto-scan:
-  lazy-initialization: true  # Global lazy initialization
-  lazy-packages:
-    - org.example.service     # Package-specific lazy initialization
-  lazy-classes:
-    - org.example.controller.UserController  # Class-specific lazy initialization
+# Environment-based conditional scanning
+# Development environment
+spring:
+  config:
+    activate:
+      on-profile: dev
 
-# Enabled switch
 auto-scan:
-  enabled: true  # Enable AutoScan (default)
-  # enabled: false  # Disable AutoScan
+  base-packages:
+    - org.example.*
+  dev-mode: true
+  include-annotations:
+    - org.springframework.stereotype.Component
+    - org.springframework.stereotype.Service
+    - org.springframework.stereotype.Controller
+    - org.springframework.stereotype.Repository
+
+# Production environment
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+auto-scan:
+  base-packages:
+    - org.example.boot
+    - org.example.business
+  dev-mode: false
+  exclude-packages-regex:
+    - org\.example\.test\..*
+    - org\.example\.example\..*
 ```
 
-### 🔄 Migration from v1.1.0
+### 🔄 Migration from v1.2.0
 
-v1.2.0 is fully backward compatible with v1.1.0. Simply update the version:
+v1.3.0 is fully backward compatible with v1.2.0. Simply update the version:
 
 ```xml
 <dependency>
     <groupId>org.itrys</groupId>
     <artifactId>autoscan-spring-boot-starter</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
 </dependency>
 ```
 
@@ -142,29 +171,14 @@ public class Application {
 
 AutoScan is evolving to provide comprehensive component scanning solutions:
 
-#### Coming in v1.3.0
-- **🎯 Advanced Filtering** - Regex-based package filtering
-  ```yaml
-  auto-scan:
-    include-patterns:
-      - ".*Service"
-      - ".*Controller"
-  ```
-
-- **🔄 Conditional Configuration** - Environment-based scanning
-  ```yaml
-  auto-scan:
-    profiles:
-      dev:
-        dev-mode: true
-      prod:
-        dev-mode: false
-  ```
-
-#### Long-term Vision
+#### Coming in v1.4.0
 - **🔌 Plugin System** - Extensible scanning strategies
 - **📊 Monitoring Dashboard** - Visual scanning analysis
+
+#### Long-term Vision
 - **🌐 Spring Cloud Integration** - Microservices optimization
+- **🤖 Smart Scanning** - AI-powered scanning optimization
+- **📱 Configuration Visualization Tool** - Graphical configuration interface
 
 **Stay tuned!** Follow our [GitHub repository](https://github.com/itrys/autoscan-spring-boot-starter) for updates.
 
@@ -182,6 +196,8 @@ AutoScan is evolving to provide comprehensive component scanning solutions:
 - 📦 **@Import Compatibility** - Supports direct import of specific classes in configuration
 - ⚡ **Lazy Initialization** - Supports lazy bean initialization for better performance
 - 🔧 **Enabled Switch** - Supports enabling or disabling AutoScan component entirely
+- 🌟 **Advanced Filtering** - Supports regex-based package filtering for more flexible scanning control
+- 🔄 **Conditional Configuration** - Supports environment-based scanning configuration
 
 ## 🚀 Quick Start
 
@@ -348,6 +364,8 @@ public @interface CustomComponent {
 | `auto-scan.dev-mode` | boolean | No | Development mode, outputs detailed scanning logs when set to `true`, defaults to auto-detection based on `spring.profiles.active` |
 | `auto-scan.exclude-packages` | List<String> | No | Package path list to exclude from scanning |
 | `auto-scan.exclude-classes` | List<String> | No | Class fully qualified name list to exclude from scanning |
+| `auto-scan.exclude-packages-regex` | List<String> | No | Regex pattern list for packages to exclude from scanning |
+| `auto-scan.include-packages-regex` | List<String> | No | Regex pattern list for packages to include in scanning |
 | `auto-scan.include-annotations` | List<String> | No | Annotation fully qualified name list to include in scanning |
 | `auto-scan.imports` | List<String> | No | Class fully qualified name list to directly import (like @Import annotation) |
 | `auto-scan.lazy-initialization` | boolean | No | Global lazy initialization switch for all scanned beans |
@@ -403,6 +421,18 @@ auto-scan:
   # Class-specific lazy initialization
   lazy-classes:
     - org.example.controller.UserController
+  
+  # Regex-based package filtering (optional) - v1.3.0+
+  # Exclude packages using regex patterns
+  exclude-packages-regex:
+    - org\.example\.test\..*
+    - org\.example\.example\..*
+    - .*\.temp\..*
+  # Include packages using regex patterns
+  include-packages-regex:
+    - org\.example\.boot\..*
+    - org\.example\.business\..*
+    - org\.example\.controller\..*
   
   # Development mode
   # true: Output detailed scanning logs

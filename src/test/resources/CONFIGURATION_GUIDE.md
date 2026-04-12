@@ -1,4 +1,4 @@
-# AutoScan v1.2.0 Configuration Guide
+# AutoScan v1.3.0 Configuration Guide
 
 ## Configuration File Structure
 
@@ -237,6 +237,42 @@ auto-scan:
   enabled: false
 ```
 
+### 12. exclude-packages-regex (Optional) - v1.3.0+
+
+**Type**: `List<String>`
+
+**Description**: Regex patterns for packages to exclude from scanning.
+
+**Examples**:
+
+```yaml
+# Exclude packages using regex patterns
+auto-scan:
+  exclude-packages-regex:
+    - org\.example\.test\..*  # Exclude all test packages
+    - org\.example\.example\..*  # Exclude all example packages
+    - .*\.temp\..*  # Exclude packages containing "temp"
+    - .*\.demo\..*  # Exclude packages containing "demo"
+```
+
+### 13. include-packages-regex (Optional) - v1.3.0+
+
+**Type**: `List<String>`
+
+**Description**: Regex patterns for packages to include in scanning. If specified, only packages matching these patterns will be included.
+
+**Examples**:
+
+```yaml
+# Include packages using regex patterns
+auto-scan:
+  include-packages-regex:
+    - org\.example\.boot\..*  # Include boot packages
+    - org\.example\.business\..*  # Include business packages
+    - org\.example\.controller\..*  # Include controller packages
+    - .*Service  # Include classes ending with "Service"
+```
+
 ## Configuration Scenarios
 
 ### Scenario 1: Basic Infrastructure Project
@@ -388,6 +424,94 @@ auto-scan:
   dev-mode: true
 ```
 
+### Scenario 11: Regex-based Package Filtering (v1.3.0+)
+
+```yaml
+spring:
+  profiles:
+    active: regex
+
+auto-scan:
+  base-packages:
+    - org.example
+  
+  # Regex patterns for excluding packages
+  exclude-packages-regex:
+    - org\.example\.test\..*  # Exclude test packages
+    - org\.example\.example\..*  # Exclude example packages
+    - .*\.temp\..*  # Exclude temporary packages
+  
+  # Regex patterns for including packages
+  include-packages-regex:
+    - org\.example\.boot\..*  # Include boot packages
+    - org\.example\.business\..*  # Include business packages
+    - org\.example\.controller\..*  # Include controller packages
+  
+  dev-mode: true
+```
+
+### Scenario 12: Environment-based Conditional Scanning (v1.3.0+)
+
+**Development Environment**:
+
+```yaml
+spring:
+  profiles:
+    active: dev
+
+auto-scan:
+  base-packages:
+    - org.example.*  # Use wildcard for flexibility
+  dev-mode: true
+  include-annotations:
+    - org.springframework.stereotype.Component
+    - org.springframework.stereotype.Service
+    - org.springframework.stereotype.Controller
+    - org.springframework.stereotype.Repository
+  exclude-packages:
+    - org.example.test
+```
+
+**Test Environment**:
+
+```yaml
+spring:
+  profiles:
+    active: test
+
+auto-scan:
+  base-packages:
+    - org.example
+  dev-mode: true
+  include-annotations:
+    - org.springframework.stereotype.Service
+    - org.springframework.stereotype.Controller
+    - org.springframework.stereotype.Repository
+  exclude-packages:
+    - org.example.test
+    - org.example.example
+```
+
+**Production Environment**:
+
+```yaml
+spring:
+  profiles:
+    active: prod
+
+auto-scan:
+  base-packages:
+    - org.example.boot
+    - org.example.business
+    - org.example.controller
+  dev-mode: false
+  exclude-packages-regex:
+    - org\.example\.test\..*  # Exclude test packages
+    - org\.example\.example\..*  # Exclude example packages
+    - .*\.temp\..*  # Exclude temporary packages
+    - .*\.demo\..*  # Exclude demo packages
+```
+
 ## Configuration Priority
 
 When using multiple configuration files, the priority is:
@@ -437,6 +561,20 @@ When using multiple configuration files, the priority is:
 1. Verify exclude configuration syntax
 2. Check if package path or class name is correct
 3. Ensure exclude configuration is in the correct profile
+
+## Migration from v1.2.0 to v1.3.0
+
+v1.3.0 is fully backward compatible with v1.2.0. Existing configurations will continue to work without any changes.
+
+**New features in v1.3.0**:
+- Advanced filtering - Regex-based package filtering for more flexible scanning control
+- Conditional configuration - Environment-based scanning configuration
+
+**Migration steps**:
+1. Update dependency version to 1.3.0
+2. (Optional) Add `exclude-packages-regex` configuration to exclude packages using regex patterns
+3. (Optional) Add `include-packages-regex` configuration to include packages using regex patterns
+4. (Optional) Use Spring Boot's profile-specific configuration for environment-based scanning
 
 ## Migration from v1.1.0 to v1.2.0
 
