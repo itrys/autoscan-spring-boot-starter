@@ -278,7 +278,7 @@ public class AutoScanProperties {
     /**
      * Get the list of regex patterns for packages to exclude from scanning
      *
-     * @return List<String>
+     * @return List&lt;String&gt;
      */
     public List<String> getExcludePackagesRegex() {
         return excludePackagesRegex;
@@ -296,7 +296,7 @@ public class AutoScanProperties {
     /**
      * Get the list of regex patterns for packages to include in scanning
      *
-     * @return List<String>
+     * @return List&lt;String&gt;
      */
     public List<String> getIncludePackagesRegex() {
         return includePackagesRegex;
@@ -305,7 +305,7 @@ public class AutoScanProperties {
     /**
      * Set the list of regex patterns for packages to include in scanning
      *
-     * @param includePackagesRegex List<String>
+     * @param includePackagesRegex List&lt;String&gt;
      */
     public void setIncludePackagesRegex(List<String> includePackagesRegex) {
         this.includePackagesRegex = includePackagesRegex;
