@@ -207,7 +207,7 @@ AutoScan is evolving to provide comprehensive component scanning solutions:
 <dependency>
     <groupId>org.itrys</groupId>
     <artifactId>autoscan-spring-boot-starter</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
 </dependency>
 ```
 
