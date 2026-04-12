@@ -248,7 +248,7 @@ After startup, the console will output scanning logs:
 >>> [AutoScan] Configured business packages: [org.example.business]
 >>> [AutoScan] Final packages to scan: [org.example.boot, org.example.business]
 >>> [AutoScan] Successfully registered 11 bean(s) from base packages.```
-
+```
 ## 📚 Use Cases
 
 ### Case 1: Technical Infrastructure Project
