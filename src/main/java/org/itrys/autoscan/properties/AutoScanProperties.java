@@ -287,7 +287,7 @@ public class AutoScanProperties {
     /**
      * Set the list of regex patterns for packages to exclude from scanning
      *
-     * @param excludePackagesRegex List<String>
+     * @param excludePackagesRegex List&lt;String&gt;
      */
     public void setExcludePackagesRegex(List<String> excludePackagesRegex) {
         this.excludePackagesRegex = excludePackagesRegex;
